@@ -1,0 +1,647 @@
+---
+import lab from '../data/lab.json';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+
+const base = '/';
+const tabs = lab.nav.tabs.map((tab) => ({ label: tab, href: `${base}${tab.toLowerCase()}/` }));
+
+const here = Astro.url.pathname.replace(/\/+$/, '');
+const isHere = (href: string) => here === href.replace(/\/+$/, '');
+
+const arrowNE = `<svg class="ico" width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4.9 11.1 11.1 4.9M5.9 4.9h5.2v5.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
+    />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site">
+      <div class="wrap head">
+        <a class="mark enter enter-0" href={base}>{lab.wordmark}</a>
+        <nav class="nav enter enter-0" aria-label="Primary">
+          {
+            tabs.map((tab) => (
+              <a href={tab.href} aria-current={isHere(tab.href) ? 'page' : undefined}>
+                {tab.label}
+              </a>
+            ))
+          }
+          <span class="nav-sep" aria-hidden="true"></span>
+          <a href={lab.nav.github} target="_blank" rel="noopener noreferrer">
+            GitHub<Fragment set:html={arrowNE} />
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="site-foot">
+      <div class="wrap">
+        <div class="inner inner--ruled foot">
+          <p>{lab.footer}</p>
+          <div class="foot-links">
+            <a href={lab.nav.github} target="_blank" rel="noopener noreferrer">
+              GitHub<Fragment set:html={arrowNE} />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <style is:global>
+      :root {
+        --paper: #ffffff;
+        --ink: #222a34;
+        --ink-soft: #4d5561;
+        --ink-mute: #666e7b;
+        --rule: #e4e6e8;
+        --rule-strong: #d3d7dc;
+        --green: #3a6e5e;
+        --sage: #589885;
+        /* on the green panel: white is 5.88:1, the two tints below are 5.13:1 and 4.84:1 */
+        --on-green: #ffffff;
+        --on-green-soft: rgba(255, 255, 255, 0.9);
+        --on-green-mute: rgba(255, 255, 255, 0.86);
+        --on-green-rule: rgba(255, 255, 255, 0.26);
+        /* metr.org runs Montserrat and nothing else; the wordmark is set in it too */
+        --sans: 'Montserrat', 'Avenir Next', Avenir, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        --pad-y: clamp(52px, 6vw, 88px);
+        color-scheme: light;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      /* short routes: the footer rests on the bottom of the viewport, ground continuous */
+      body {
+        margin: 0;
+        min-height: 100vh;
+        min-height: 100svh;
+        display: flex;
+        flex-direction: column;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--sans);
+        font-size: 16px;
+        line-height: 1.65;
+        font-weight: 400;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* column so the home page's single block can claim the leftover height */
+      main {
+        flex: 1 0 auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      h1,
+      h2,
+      h3,
+      p,
+      ol {
+        margin: 0;
+      }
+
+      ol {
+        padding: 0;
+        list-style: none;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      a:focus-visible,
+      .skip:focus-visible {
+        outline: 2px solid var(--green);
+        outline-offset: 3px;
+        border-radius: 2px;
+      }
+
+      .skip {
+        position: absolute;
+        left: -9999px;
+        top: 0;
+        z-index: 10;
+        background: var(--paper);
+        color: var(--ink);
+        padding: 12px 18px;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        text-decoration: none;
+        border: 1px solid var(--rule);
+      }
+
+      .skip:focus {
+        left: 12px;
+        top: 12px;
+      }
+
+      .wrap {
+        max-width: 1364px;
+        margin: 0 auto;
+        padding-inline: clamp(20px, 4.6vw, 68px);
+      }
+
+      .inner {
+        padding-block: var(--pad-y);
+      }
+
+      .inner--ruled {
+        border-top: 1px solid var(--rule);
+      }
+
+      .ico {
+        flex: none;
+        margin-left: 0.4em;
+        transform: translateY(0.06em);
+      }
+
+      /* ---------- header ---------- */
+
+      .site {
+        border-bottom: 1px solid var(--rule);
+      }
+
+      .head {
+        display: flex;
+        align-items: center;
+        gap: 20px 32px;
+        flex-wrap: wrap;
+        min-height: 84px;
+        padding-block: 18px;
+      }
+
+      /* Geometric sans wordmark, same face as everything else. "Thinking Space" is set
+         with capitals, so the tracking is opened a hair rather than tightened —
+         Montserrat's caps, and the A/I pair especially, close up under negative fit. */
+      .mark {
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: 0.012em;
+        line-height: 1;
+        text-decoration: none;
+        color: var(--ink);
+        transition: color 0.18s ease;
+      }
+
+      .mark:hover {
+        color: var(--green);
+      }
+
+      .nav {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: clamp(16px, 2.3vw, 34px);
+      }
+
+      .nav a {
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        letter-spacing: -0.005em;
+        color: #333333;
+        text-decoration: none;
+        padding-block: 6px 4px;
+        border-bottom: 2px solid transparent;
+        transition:
+          color 0.18s ease,
+          border-color 0.18s ease;
+      }
+
+      .nav a:hover {
+        color: var(--green);
+      }
+
+      /* active route: the world's green rule */
+      .nav a[aria-current='page'] {
+        color: var(--green);
+        border-bottom-color: var(--green);
+      }
+
+      .nav-sep {
+        width: 1px;
+        height: 18px;
+        background: var(--rule);
+      }
+
+      /* ---------- home: the vision, and the one paper beside it ---------- */
+
+      /* the section claims the leftover height so the footer keeps the bottom edge;
+         the padding is the floor it never drops below on short screens */
+      .opening {
+        flex: 1 0 auto;
+        display: grid;
+        align-content: center;
+        padding-block: clamp(56px, 8vh, 100px);
+      }
+
+      /* the wrap's auto margins would otherwise shrink it to the headline's measure
+         and float the vision off the left margin the wordmark sits on */
+      .opening > .wrap {
+        width: 100%;
+      }
+
+      /* the panel is the heavier half optically, so it takes the smaller column and the
+         two blocks are centered against each other rather than aligned at the top */
+      .opening-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 44%);
+        gap: clamp(30px, 4.2vw, 68px);
+        align-items: center;
+      }
+
+      /* Montserrat sets the vision in 24.1em and puts its comma at 12.75em. The measure
+         sits just past that comma so the break lands there, and the cap is the largest
+         size at which 12.75em still clears the 1fr column (629px at 1440): two lines,
+         "Understanding Language" over "Advancing Intelligence", from 1600 down to 375. */
+      h1 {
+        font-size: clamp(1.625rem, 0.6rem + 2.55vw, 2.875rem);
+        line-height: 1.1;
+        letter-spacing: -0.025em;
+        font-weight: 500;
+        text-wrap: balance;
+        max-width: 13.5em;
+      }
+
+      /* the belief is a sentence now, not a creed: prose scale, a 40ch prose measure, and
+         a block that stays inside the headline's 586px rather than out-reaching it.
+         pretty leaves a two-word last line at any measure here; at 40ch the greedy rag
+         (395 / 412 / 430) is already the balanced one, so balance costs nothing and
+         browsers without it land on the same three lines. */
+      .belief {
+        margin-top: clamp(20px, 2.2vw, 32px);
+        max-width: 40ch;
+        font-size: clamp(1rem, 0.92rem + 0.36vw, 1.125rem);
+        line-height: 1.55;
+        text-wrap: balance;
+        color: var(--ink-soft);
+      }
+
+      /* ---------- home: the green panel ---------- */
+
+      /* flat field, no shadow and no gradient — the one saturated surface on a site of
+         hairlines. It points at /research/; the summary is read there, not here. */
+      .panel {
+        padding: clamp(28px, 3.1vw, 44px) clamp(24px, 2.9vw, 40px);
+        background: var(--green);
+        color: var(--on-green);
+      }
+
+      .panel-name {
+        font-size: clamp(1.25rem, 1.12rem + 0.42vw, 1.5rem);
+        line-height: 1.25;
+        letter-spacing: -0.016em;
+        font-weight: 500;
+      }
+
+      .panel-title {
+        margin-top: 14px;
+        max-width: 40ch;
+        font-size: 0.9375rem;
+        line-height: 1.5;
+        color: var(--on-green-soft);
+      }
+
+      .panel-meta {
+        margin-top: 16px;
+        font-size: 0.8125rem;
+        color: var(--on-green-mute);
+      }
+
+      .panel-lede {
+        margin-top: 18px;
+        max-width: 42ch;
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        color: var(--on-green-soft);
+      }
+
+      .panel-foot {
+        margin-top: clamp(28px, 3.4vw, 46px);
+        padding-top: 20px;
+        border-top: 1px solid var(--on-green-rule);
+      }
+
+      .panel-foot a {
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 4px;
+        text-decoration-color: transparent;
+        transition: text-decoration-color 0.18s ease;
+      }
+
+      .panel-foot a:hover {
+        text-decoration-color: var(--on-green-mute);
+      }
+
+      .panel a:focus-visible {
+        outline-color: var(--on-green);
+      }
+
+      /* ---------- page banner ---------- */
+
+      /* The route opens on the document, not on top of it: white ground, the heading on
+         the same left margin as the wordmark above it, a column of air, and a rule one
+         step heavier than the roster's hairlines closing the block. The masthead is made
+         of space, rule weight and type scale — the world's single saturated surface stays
+         the home page's paper panel, spent once. The rule sits inside the container, so it
+         runs to the same margins as the footer's and the entries'; it is also the edge the
+         record opens on, which is why the roster's first entry drops its own hairline. */
+      .pagehead-inner {
+        padding-block: clamp(42px, 5vw, 78px) clamp(22px, 2.4vw, 32px);
+        border-bottom: 1px solid var(--rule-strong);
+      }
+
+      /* set below the home page's 46px vision, so the two routes stay ranked */
+      .pagehead-title {
+        max-width: none;
+        font-size: clamp(1.75rem, 1.15rem + 1.9vw, 2.75rem);
+        line-height: 1.15;
+        letter-spacing: -0.022em;
+        font-weight: 500;
+        color: var(--ink);
+      }
+
+      /* the record starts on the masthead's rule, so it needs no lead-in of its own */
+      .inner--doc {
+        padding-block: 0 var(--pad-y);
+      }
+
+      /* The roster hangs from the right margin: its right edge meets the nav above, the
+         section hairlines, and the footer's GitHub link, so the wide left void reads as a
+         deliberate margin rather than as content that failed to fill the container.
+         Centring was tried and rejected — it aligns the block with nothing, and the
+         full-width rules then read as a frame the content floats inside. */
+      .roster {
+        max-width: 920px;
+        margin-inline: auto 0;
+      }
+
+      /* ---------- research roster ---------- */
+
+      /* The title sits in the masthead, so the label/content grid lives entirely in the
+         roster: each record runs from the same left margin as the wordmark above it, and
+         its rule spans the container like the header's and the footer's.
+         The document grid again, one level down: the dateline is set in the margin and
+         the paper in the measure, so every entry is ruled and weighted identically. The
+         margin is sized for the date and nothing else — the record carries no imagery. */
+      .entry {
+        display: grid;
+        grid-template-columns: 152px minmax(0, 1fr);
+        gap: 6px clamp(20px, 2.6vw, 40px);
+        align-items: start;
+        padding-block: 26px 34px;
+        border-top: 1px solid var(--rule);
+      }
+
+      /* the masthead's heavier rule already draws the record's top edge */
+      .entry:first-child {
+        border-top: none;
+      }
+
+      .entry:last-child {
+        border-bottom: 1px solid var(--rule);
+      }
+
+      .entry-when {
+        font-size: 0.8125rem;
+        line-height: 1.4;
+        color: var(--ink-mute);
+        padding-top: 6px;
+      }
+
+      .entry-main {
+        grid-column: 2;
+      }
+
+      .entry-title {
+        font-size: 1.0625rem;
+        line-height: 1.4;
+        letter-spacing: -0.012em;
+        font-weight: 500;
+      }
+
+      .entry-title a {
+        display: inline-flex;
+        align-items: baseline;
+        text-decoration: none;
+        transition: color 0.18s ease;
+      }
+
+      .entry-title a:hover {
+        color: var(--green);
+      }
+
+      .entry-sub {
+        margin-top: 8px;
+        max-width: 52ch;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: var(--ink-soft);
+      }
+
+      .entry-body {
+        margin-top: 16px;
+        max-width: 62ch;
+        font-size: 0.9375rem;
+        line-height: 1.62;
+        color: var(--ink-soft);
+      }
+
+      .entry-links {
+        margin-top: 22px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 30px;
+      }
+
+      .entry-links a {
+        display: inline-flex;
+        align-items: baseline;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        color: var(--ink);
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 4px;
+        text-decoration-color: var(--rule-strong);
+        transition:
+          color 0.18s ease,
+          text-decoration-color 0.18s ease;
+      }
+
+      .entry-links a:hover {
+        color: var(--green);
+        text-decoration-color: var(--sage);
+      }
+      /* ---------- footer ---------- */
+
+      .site-foot .inner {
+        padding-block: 28px 44px;
+      }
+
+      .foot {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px 28px;
+        font-size: 0.8125rem;
+        color: var(--ink-mute);
+      }
+
+      .foot-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 24px;
+      }
+
+      .foot-links a {
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+        transition: color 0.18s ease;
+      }
+
+      .foot-links a:hover {
+        color: var(--green);
+      }
+
+      /* ---------- entrance ---------- */
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      .enter {
+        animation: rise 0.72s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      .enter-0 {
+        animation-delay: 0s;
+      }
+      .enter-1 {
+        animation-delay: 0.06s;
+      }
+      .enter-2 {
+        animation-delay: 0.13s;
+      }
+
+      /* ---------- responsive ---------- */
+
+      @media (max-width: 900px) {
+        /* one column: the vision first, the paper under it */
+        .opening-grid {
+          grid-template-columns: minmax(0, 1fr);
+          gap: clamp(30px, 5.4vw, 48px);
+        }
+      }
+
+      /* Montserrat's wider advances need the roster to fold a step earlier than before:
+         the marginal date drops above the paper it dates */
+      @media (max-width: 620px) {
+        .entry {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 2px;
+        }
+
+        .entry-when {
+          padding-top: 0;
+        }
+
+        /* one column: the date above the paper it dates */
+        .entry-main {
+          grid-column: auto;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .head {
+          min-height: 0;
+          gap: 14px;
+        }
+
+        .nav {
+          width: 100%;
+          margin-left: 0;
+          justify-content: flex-end;
+        }
+
+        .opening {
+          padding-block: clamp(40px, 6vh, 72px);
+        }
+      }
+
+      /* below 360px the comma pair no longer clears the column at 26px and the break
+         would fall inside "Language, Advancing"; one step down keeps the pair whole */
+      @media (max-width: 359px) {
+        h1 {
+          font-size: 1.5rem;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        .enter {
+          animation: none;
+        }
+
+        *,
+        *::before,
+        *::after {
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </body>
+</html>

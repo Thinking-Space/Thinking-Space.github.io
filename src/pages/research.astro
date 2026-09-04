@@ -1,0 +1,76 @@
+---
+import Layout from '../layouts/Base.astro';
+import lab from '../data/lab.json';
+
+type Entry = {
+  title: string;
+  fullTitle?: string;
+  date?: string;
+  summary?: string;
+  links?: { paper: string; code: string };
+};
+
+/* newest first: the lab leads with its most recent work, and the dateline in the
+   margin reads down in order. Sorted by date, not by array position, so adding a
+   paper cannot silently put the wrong one at the top. */
+const research = [...(lab.research as Entry[])].sort(
+  (a, b) => Date.parse(`1 ${b.date}`) - Date.parse(`1 ${a.date}`)
+);
+
+const arrowNE = `<svg class="ico" width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4.9 11.1 11.1 4.9M5.9 4.9h5.2v5.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+---
+
+<Layout
+  title={`Research — ${lab.name}`}
+  description="Papers and code from Thinking Space on on-policy distillation of large language models."
+>
+  <section class="pagehead">
+    <div class="wrap">
+      <div class="pagehead-inner">
+        <h1 class="pagehead-title enter enter-1">Research</h1>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="inner inner--doc">
+        <ol class="roster enter enter-2" role="list">
+          {
+            research.map((item) => (
+              <li class="entry">
+                <p class="entry-when">{item.date}</p>
+                <div class="entry-main">
+                  <h2 class="entry-title">
+                    {item.links ? (
+                      <a href={item.links.paper} target="_blank" rel="noopener noreferrer">
+                        {item.title}
+                        <Fragment set:html={arrowNE} />
+                      </a>
+                    ) : (
+                      item.title
+                    )}
+                  </h2>
+                  <p class="entry-sub">{item.fullTitle}</p>
+                  <p class="entry-body">{item.summary}</p>
+                  {item.links && (
+                    <div class="entry-links">
+                      <a href={item.links.paper} target="_blank" rel="noopener noreferrer">
+                        Read the paper
+                        <Fragment set:html={arrowNE} />
+                      </a>
+                      <a href={item.links.code} target="_blank" rel="noopener noreferrer">
+                        View the code
+                        <Fragment set:html={arrowNE} />
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </section>
+</Layout>

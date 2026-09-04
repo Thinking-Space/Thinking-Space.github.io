@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Base.astro';
+import lab from '../data/lab.json';
+
+type Entry = {
+  title: string;
+  fullTitle?: string;
+  date?: string;
+  summary?: string;
+};
+
+const base = '/';
+
+/* the panel carries one paper, not the record; the record is /research/.
+   It is the newest, chosen by date rather than array position so it stays
+   correct as papers are added. */
+const paper = [...(lab.research as Entry[])].sort(
+  (a, b) => Date.parse(`1 ${b.date}`) - Date.parse(`1 ${a.date}`)
+)[0];
+/* the panel carries the opening sentence only; the summary is read in full on /research/ */
+const lede = paper?.summary?.split(/(?<=\.)\s+/)[0] ?? '';
+
+const arrowE = `<svg class="ico" width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3.2 8h9.6M9.1 4.3 12.8 8l-3.7 3.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+---
+
+<Layout
+  title={lab.name}
+  description="Thinking Space is a research lab investigating the foundations of language intelligence and building agents that reason, learn, and act reliably in complex environments."
+>
+  <section class="opening">
+    <div class="wrap">
+      <div class="opening-grid">
+        <div class="opening-say">
+          <h1 class="enter enter-1">{lab.vision}</h1>
+          <p class="belief enter enter-2">{lab.belief}</p>
+        </div>
+
+        {
+          paper && (
+            <aside class="panel enter enter-2" aria-label="Selected paper">
+              <h2 class="panel-name">{paper.title}</h2>
+              <p class="panel-title">{paper.fullTitle}</p>
+              <p class="panel-meta">{paper.date}</p>
+              <p class="panel-lede">{lede}</p>
+              <p class="panel-foot">
+                <a href={`${base}research/`}>
+                  Papers and code<Fragment set:html={arrowE} />
+                </a>
+              </p>
+            </aside>
+          )
+        }
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,35 @@
+{
+  "name": "Thinking Space",
+  "wordmark": "Thinking Space",
+  "vision": "Understanding Language. Advancing Intelligence.",
+  "belief": "We investigate the foundations of language intelligence and build agents that can reason, learn, and act reliably in complex environments.",
+  "research": [
+    {
+      "title": "Rethinking OPD",
+      "fullTitle": "Rethinking On-Policy Distillation of Large Language Models: Phenomenology, Mechanism, and Recipe",
+      "date": "April 2026",
+      "summary": "A systematic investigation of on-policy distillation dynamics. Identifies the two conditions that govern whether OPD succeeds — compatible thinking spaces between student and teacher, and genuinely new teacher capability — traces the token-level mechanism behind them, and derives practical recipes for recovering failing runs.",
+      "links": {
+        "paper": "https://arxiv.org/abs/2604.13016",
+        "code": "https://github.com/Thinking-Space/Rethinking-OPD"
+      }
+    },
+    {
+      "title": "Rethinking OPD II",
+      "fullTitle": "Rethinking On-Policy Distillation of Large Language Models II: One Training Example",
+      "date": "September 2026",
+      "summary": "Examines the role of training data in on-policy distillation at the data-minimal limit, training on a single query. One-shot OPD keeps improving for hundreds of steps and recovers most of full-data OPD's gain across task domains and model families. A single query reaches 71.5% state coverage relative to full-data OPD and sixteen reach 98.9%, matching full-data training — OPD is therefore data-overfed but algorithm-starved.",
+      "links": {
+        "paper": "https://arxiv.org/abs/2609.04172",
+        "code": "https://github.com/Thinking-Space/One-Shot-OPD"
+      }
+    }
+  ],
+  "nav": {
+    "tabs": [
+      "Research"
+    ],
+    "github": "https://github.com/Thinking-Space"
+  },
+  "footer": "© 2026 Thinking Space"
+}
