@@ -23,6 +23,16 @@
         "paper": "https://arxiv.org/abs/2609.04172",
         "code": "https://github.com/Thinking-Space/One-Shot-OPD"
       }
+    },
+    {
+      "title": "AutoSFT",
+      "fullTitle": "AutoSFT: An Agentic System for Automated Data Research in Supervised Fine-Tuning",
+      "date": "October 2026",
+      "summary": "A multi-agent system that automates the full space of data engineering operations in supervised fine-tuning. A single agent collapses to one action family and loses context repeatedly. AutoSFT isolates execution from analysis, gathers proposals from several complementary angles, and synthesizes data for undersupplied capabilities. Each component added in turn is individually attributable: the executor halves context loss, analysis lifts IFEval by +6.5 points, and synthesis adds +3.4 IFEval and +2.9 IFBench, with the same structure transferring to code at +3.7 MBPP+.",
+      "links": {
+        "paper": "https://arxiv.org/abs/2610.22194",
+        "code": "https://github.com/Thinking-Space/AutoSFT"
+      }
     }
   ],
   "nav": {
