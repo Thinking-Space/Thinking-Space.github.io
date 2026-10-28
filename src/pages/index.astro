@@ -9,18 +9,52 @@ type Entry = {
   summary?: string;
 };
 
+type Spotlight = {
+  kind?: string;
+  title: string;
+  fullTitle?: string;
+  meta?: string;
+  lede?: string;
+  links?: { label: string; href: string }[];
+};
+
 const base = '/';
 
-/* the panel carries one paper, not the record; the record is /research/.
-   It is the newest, chosen by date rather than array position so it stays
-   correct as papers are added. */
+/* the panel carries one thing, not the record; the record is /research/.
+   Work that is open rather than published — a benchmark still gathering tasks —
+   is named in lab.json as the spotlight and takes the panel while it is there.
+   With no spotlight the panel falls back to the newest paper, chosen by date
+   rather than array position so it stays correct as papers are added. */
+const spotlight = (lab as { spotlight?: Spotlight }).spotlight;
+
 const paper = [...(lab.research as Entry[])].sort(
   (a, b) => Date.parse(`1 ${b.date}`) - Date.parse(`1 ${a.date}`)
 )[0];
 /* the panel carries the opening sentence only; the summary is read in full on /research/ */
 const lede = paper?.summary?.split(/(?<=\.)\s+/)[0] ?? '';
 
+const panel = spotlight
+  ? {
+      kind: spotlight.kind,
+      name: spotlight.title,
+      title: spotlight.fullTitle,
+      meta: spotlight.meta,
+      lede: spotlight.lede,
+      links: spotlight.links ?? [],
+      away: true,
+    }
+  : paper && {
+      kind: undefined,
+      name: paper.title,
+      title: paper.fullTitle,
+      meta: paper.date,
+      lede,
+      links: [{ label: 'Papers and code', href: `${base}research/` }],
+      away: false,
+    };
+
 const arrowE = `<svg class="ico" width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3.2 8h9.6M9.1 4.3 12.8 8l-3.7 3.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const arrowNE = `<svg class="ico" width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4.9 11.1 11.1 4.9M5.9 4.9h5.2v5.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 ---
 
 <Layout
@@ -36,16 +70,30 @@ const arrowE = `<svg class="ico" width="13" height="13" viewBox="0 0 16 16" fill
         </div>
 
         {
-          paper && (
-            <aside class="panel enter enter-2" aria-label="Selected paper">
-              <h2 class="panel-name">{paper.title}</h2>
-              <p class="panel-title">{paper.fullTitle}</p>
-              <p class="panel-meta">{paper.date}</p>
-              <p class="panel-lede">{lede}</p>
+          panel && (
+            <aside
+              class="panel enter enter-2"
+              aria-label={panel.kind ?? 'Selected paper'}
+            >
+              {panel.kind && <p class="panel-kind">{panel.kind}</p>}
+              <h2 class="panel-name">{panel.name}</h2>
+              <p class="panel-title">{panel.title}</p>
+              <p class="panel-meta">{panel.meta}</p>
+              <p class="panel-lede">{panel.lede}</p>
               <p class="panel-foot">
-                <a href={`${base}research/`}>
-                  Papers and code<Fragment set:html={arrowE} />
-                </a>
+                {panel.links.map((link) =>
+                  panel.away ? (
+                    <a href={link.href} target="_blank" rel="noopener noreferrer">
+                      {link.label}
+                      <Fragment set:html={arrowNE} />
+                    </a>
+                  ) : (
+                    <a href={link.href}>
+                      {link.label}
+                      <Fragment set:html={arrowE} />
+                    </a>
+                  )
+                )}
               </p>
             </aside>
           )

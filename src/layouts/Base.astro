@@ -316,11 +316,24 @@ const arrowNE = `<svg class="ico" width="13" height="13" viewBox="0 0 16 16" fil
       /* ---------- home: the green panel ---------- */
 
       /* flat field, no shadow and no gradient — the one saturated surface on a site of
-         hairlines. It points at /research/; the summary is read there, not here. */
+         hairlines. It points away from itself: at /research/, where the summary is read
+         in full, or out to the project the spotlight names. */
       .panel {
         padding: clamp(28px, 3.1vw, 44px) clamp(24px, 2.9vw, 40px);
         background: var(--green);
         color: var(--on-green);
+      }
+
+      /* the eyebrow says what the panel is holding whenever that is not a paper. Without
+         it a project still gathering tasks reads as finished work, which is the one thing
+         the green field is loud enough to imply on its own. */
+      .panel-kind {
+        margin-bottom: 14px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--on-green-mute);
       }
 
       .panel-name {
@@ -352,7 +365,11 @@ const arrowNE = `<svg class="ico" width="13" height="13" viewBox="0 0 16 16" fil
         color: var(--on-green-soft);
       }
 
+      /* one link or two, on a row that wraps before it crowds the panel's inner edge */
       .panel-foot {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px clamp(20px, 2.4vw, 32px);
         margin-top: clamp(28px, 3.4vw, 46px);
         padding-top: 20px;
         border-top: 1px solid var(--on-green-rule);

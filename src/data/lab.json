@@ -3,6 +3,23 @@
   "wordmark": "Thinking Space",
   "vision": "Understanding Language. Advancing Intelligence.",
   "belief": "We investigate the foundations of language intelligence and build agents that can reason, learn, and act reliably in complex environments.",
+  "spotlight": {
+    "kind": "Call for contributions",
+    "title": "AutoRLBench",
+    "fullTitle": "The first benchmark built from real RL training failures",
+    "meta": "Open for contributions · No deadline",
+    "lede": "RL training rarely crashes. It quietly stops being what you think it is — a reward curve climbing for 100 steps while held-out accuracy falls by three quarters. AutoRLBench collects runs like these across six failure categories and asks whether an agent can find the root cause and repair it.",
+    "links": [
+      {
+        "label": "Project page",
+        "href": "https://thinking-space.github.io/AutoRLBench/"
+      },
+      {
+        "label": "Contribute a task",
+        "href": "https://thinking-space.github.io/AutoRLBench/contribute.html"
+      }
+    ]
+  },
   "research": [
     {
       "title": "Rethinking OPD",
